@@ -1,11 +1,11 @@
 {
-	"name" : "piko/db",
-	"description" : "A lightweight Active Record helper linked with a database access object on top of PDO.",
+	"name" : "piko/i18n",
+	"description" : "A minimal internationalization component which can be used in a piko application or standalone.",
 	"keywords" : [
-		"active record",
-		"database",
-		"record",
-		"sql"
+		"internationalization",
+		"i18n",
+		"translation",
+		"language"
 	],
 	"authors" : [{
 			"name" : "Sylvain Philip",
@@ -13,7 +13,7 @@
 			"role" : "Developer"
 		}
 	],
-	"homepage" : "https://github.com/piko-framework/db",
+	"homepage" : "https://github.com/piko-framework/i18n",
 	"license" : "LGPL-3.0-or-later",
 	"require" : {
 		"php" : ">=7.1.0",
@@ -23,9 +23,9 @@
 		"psr-4" : {
 			"piko\\" : "src"
 		},
-		"files": [
-            "src/functions.php"
-        ]
+		"files" : [
+			"src/functions.php"
+		]
 	},
 	"require-dev" : {
 		"phpunit/phpunit" : "^9.5",
