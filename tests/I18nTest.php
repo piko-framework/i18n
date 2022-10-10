@@ -51,4 +51,11 @@ class I18nTest extends TestCase
         $this->assertEquals('Translation test', $i18n->translate('test', 'Translation test'));
         $this->assertEquals('Hello Toto', $i18n->translate('test', 'Hello {name}', ['name' => 'Toto']));
     }
+
+    public function testNotRegisteredI18nComponent()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('i18n must be instance of piko\I18n');
+        __('test', 'Translation test');
+    }
 }

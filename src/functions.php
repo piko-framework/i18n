@@ -19,7 +19,8 @@ use piko\I18n;
  * @param array<string> $params Parameters substitution,
  *                                               eg. $this->translate('site', 'Hello {name}', ['name' => 'John']).
  *
- * @return string|null The translated text or the text itself if no translation was found (the text can be null).
+ * @throws RuntimeException
+ * @return string The translated text or the text itself if no translation was found (the text can be null).
  *
  * @see I18n::translate()
  */
@@ -27,9 +28,9 @@ function __(string $domain, ?string $text, array $params = []): ?string
 {
     $i18n = Piko::get('i18n');
 
-    if ($i18n instanceof I18n) {
-        return $i18n->translate($domain, $text, $params);
+    if (!$i18n instanceof I18n) {
+        throw new RuntimeException('i18n must be instance of piko\I18n');
     }
 
-    return $text;
+    return $i18n->translate($domain, $text, $params);
 }
