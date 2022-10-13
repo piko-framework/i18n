@@ -65,7 +65,7 @@ class I18n extends Component
     public function addTranslation(string $domain, string $path): void
     {
         $this->trigger('beforeAddTranslation', [$domain, $path]);
-        $this->messages[$domain] = require Piko::getAlias($path) . '/' . Piko::get('language', 'en') . '.php';
+        $this->messages[$domain] = require Piko::getAlias($path) . '/' . ($_ENV['LANG'] ?? 'en') . '.php';
     }
 
     /**

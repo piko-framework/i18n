@@ -8,12 +8,13 @@ class I18nTest extends TestCase
     protected function setUp(): void
     {
         Piko::setAlias('@app', __DIR__);
-        Piko::set('language', 'fr');
+        $_ENV['LANG'] = 'fr';
     }
 
     protected function tearDown(): void
     {
         Piko::reset();
+        unset($_ENV['LANG']);
     }
 
     public function testWithConfig()

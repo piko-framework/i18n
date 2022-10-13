@@ -5,7 +5,7 @@
 
 A minimal internationalization component which can be used in a piko application or standalone.
 
-# Installation
+## Installation
 
 It's recommended that you use Composer to install Piko I18n.
 
@@ -13,9 +13,22 @@ It's recommended that you use Composer to install Piko I18n.
 composer require piko/i18n
 ```
 
-# Usage
+## Usage
 
-Application structure example :
+In order to use the I18n component, translations have to be stored in PHP 
+files that return a key-value pair array of translations. Keys are strings to translate 
+and values are corresponding translated strings.
+
+Example of translation file *fr.php* :
+
+```php
+return [
+    'Translation test' => 'Test de traduction',
+    'Hello {name}' => 'Bonjour {name}',
+];
+```
+
+Application structure example:
 
 ```
 App root
@@ -24,13 +37,13 @@ App root
   |__index.php
 ```
 
-fr.php :
+I18n component looks for the `LANG` environment variable to include the appropriate tranlation file.
+
+This can be set in php before invoking the component:
 
 ```php
-return [
-    'Translation test' => 'Test de traduction',
-    'Hello {name}' => 'Bonjour {name}',
-];
+$_ENV['LANG'] = 'fr';
+
 ```
 
 ## Usage in a piko application
@@ -48,22 +61,21 @@ use piko\Piko;
 
 require('vendor/autoload.php');
 
+$_ENV['LANG'] = 'fr';
+
 $config = [
     'basePath' => __DIR__,
-    'language' => 'fr',
     'components' => [
         'i18n' => [
-            'class' => 'piko\i18n',
+            'class' => 'piko\I18n',
             'translations' => [
-                'app' => '@app/tests/messages'
+                'app' => '@app/messages'
             ]
         ],
     ],
 ];
 
 $app = new Application($config);
-
-Piko::set('language', $app->language);
 
 $i18n = Piko::get('i18n');
 
@@ -75,31 +87,28 @@ echo __('app', 'Translation test') . '<br>'; // Test de traduction
 echo __('app', 'Hello {name}', ['name' => 'John']) . '<br>' ;  // Bonjour John
 ```
 
-## Usage in a standalone application
+## Usage in a standalone script
 
 ```php
-$config = [
-    'translations' => [
-        'app' => '@app/tests/messages'
-    ]
-];
-
 use piko\I18n;
 use piko\Piko;
 
 require('vendor/autoload.php');
 
-Piko::set('language', 'fr');
-Piko::setAlias('@app', __DIR__);
+$_ENV['LANG'] = 'fr';
+
+$config = [
+    'translations' => [
+        'app' => __DIR__ . '/messages'
+    ]
+];
 
 $i18n = new I18n($config);
-
-Piko::set('i18n', $i18n);
-
 echo $i18n->translate('app', 'Translation test') . '<br>';
 echo $i18n->translate('app', 'Hello {name}', ['name' => 'John']) . '<br>' ;
 
 // Using the proxy function __() :
+Piko::set('i18n', $i18n);
 echo __('app', 'Translation test') . '<br>';
 echo __('app', 'Hello {name}', ['name' => 'John']) . '<br>' ;
 
