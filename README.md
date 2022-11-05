@@ -37,15 +37,6 @@ App root
   |__index.php
 ```
 
-I18n component looks for the `LANG` environment variable to include the appropriate tranlation file.
-
-This can be set in php before invoking the component:
-
-```php
-$_ENV['LANG'] = 'fr';
-
-```
-
 ## Usage in a piko application
 
 ```bash
@@ -57,19 +48,17 @@ index.php :
 ```php
 
 use piko\Application;
-use piko\Piko;
+use function Piko\I18n\__;
 
 require('vendor/autoload.php');
-
-$_ENV['LANG'] = 'fr';
 
 $config = [
     'basePath' => __DIR__,
     'components' => [
-        'i18n' => [
-            'class' => 'piko\I18n',
-            'translations' => [
-                'app' => '@app/messages'
+        'Piko\I18n' => [
+            'construct' => [
+                ['app' => '@app/messages'],
+                'fr'
             ]
         ],
     ],
@@ -77,7 +66,7 @@ $config = [
 
 $app = new Application($config);
 
-$i18n = Piko::get('i18n');
+$i18n = $app->getComponent('Piko\I18n');
 
 echo $i18n->translate('app', 'Translation test') . '<br>'; // Test de traduction
 echo $i18n->translate('app', 'Hello {name}', ['name' => 'John']) . '<br>' ; // Bonjour John
@@ -91,24 +80,17 @@ echo __('app', 'Hello {name}', ['name' => 'John']) . '<br>' ;  // Bonjour John
 
 ```php
 use piko\I18n;
-use piko\Piko;
+use function Piko\I18n\__;
 
 require('vendor/autoload.php');
 
-$_ENV['LANG'] = 'fr';
+$i18n = new I18n(['app' => __DIR__ . '/messages', 'fr']);
 
-$config = [
-    'translations' => [
-        'app' => __DIR__ . '/messages'
-    ]
-];
-
-$i18n = new I18n($config);
 echo $i18n->translate('app', 'Translation test') . '<br>';
 echo $i18n->translate('app', 'Hello {name}', ['name' => 'John']) . '<br>' ;
 
 // Using the proxy function __() :
-Piko::set('i18n', $i18n);
+
 echo __('app', 'Translation test') . '<br>';
 echo __('app', 'Hello {name}', ['name' => 'John']) . '<br>' ;
 
