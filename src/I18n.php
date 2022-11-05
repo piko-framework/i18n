@@ -10,21 +10,40 @@
 
 declare(strict_types=1);
 
-namespace piko;
+namespace Piko;
+
+use Piko\I18n\Event\AfterTranslateEvent;
+use Piko\I18n\Event\BeforeTranslateEvent;
 
 /**
  * Internationalization class
  *
  * @author Sylvain PHILIP <contact@sphilip.com>
  */
-class I18n extends Component
+class I18n
 {
+    use EventHandlerTrait;
+
+    /**
+     * The language code currently used for translations
+     *
+     * @var string
+     */
+    public $language = '';
+
     /**
      * Messages container by domain
      *
-     * @var array<array<string>>
+     * @var array<array<string, string>>
      */
     protected $messages = [];
+
+    /**
+     * I18n Instance
+     *
+     * @var I18n
+     */
+    protected static $instance;
 
     /**
      * Constructor
@@ -42,17 +61,31 @@ class I18n extends Component
        ]
        ```
      *
-     * @param array<array<string>> $config
+     * @param array<string, string> $translations
      */
-    public function __construct(array $config = [])
+    public function __construct(array $translations = [], string $language = 'en')
     {
-        if (isset($config['translations'])) {
-            foreach ($config['translations'] as $domain => $path) {
-                $this->addTranslation($domain, $path);
-            }
+        $this->language = $language;
+
+        foreach ($translations as $domain => $path) {
+            $this->addTranslation($domain, $path);
         }
 
-        parent::__construct($config);
+        static::$instance = $this;
+    }
+
+    /**
+     * Return I18n singleton instance
+     *
+     * @return I18n
+     */
+    public function getInstance(): I18n
+    {
+        if (static::$instance === null) {
+            static::$instance = new I18n();
+        }
+
+        return static::$instance;
     }
 
     /**
@@ -64,34 +97,37 @@ class I18n extends Component
      */
     public function addTranslation(string $domain, string $path): void
     {
-        $this->trigger('beforeAddTranslation', [$domain, $path]);
-        $this->messages[$domain] = require Piko::getAlias($path) . '/' . ($_ENV['LANG'] ?? 'en') . '.php';
+        $this->messages[$domain] = require \Piko::getAlias($path) . '/' . $this->language . '.php';
     }
 
     /**
      * Translate a text.
      *
      * @param string $domain The translation domain, for instance 'app'.
-     * @param string $text The text to translate.
-     * @param array<string> $params Parameters substitution,
+     * @param string|null $text The text to translate.
+     * @param array<string, string> $params Parameters substitution,
      *                                               eg. $this->translate('site', 'Hello {name}', ['name' => 'John']).
      *
      * @return string|null The translated text or the text itself if no translation was found (the text can be null).
      */
     public function translate(string $domain, ?string $text, array $params = []): ?string
     {
-        $this->trigger('beforeTranslate', [&$domain, &$text, &$params]);
+        $event = new BeforeTranslateEvent($domain, $text, $params);
+
+        $this->trigger($event);
 
         if (is_string($text)) {
-            $text = $this->messages[$domain][$text] ?? $text;
+            $text = $this->messages[$event->domain][$event->text] ?? $text;
 
-            foreach ($params as $k => $v) {
+            foreach ($event->params as $k => $v) {
                 $text = str_replace('{' . $k . '}', $v, $text);
             }
         }
 
-        $this->trigger('afterTranslate', [$domain, &$text]);
+        $event = new AfterTranslateEvent($domain, $text);
 
-        return $text;
+        $this->trigger($event);
+
+        return $event->text;
     }
 }

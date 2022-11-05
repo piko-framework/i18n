@@ -1,32 +1,25 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use piko\Piko;
-use piko\I18n;
+
+use Piko\I18n;
+use function Piko\I18n\__;
 
 class I18nTest extends TestCase
 {
     protected function setUp(): void
     {
         Piko::setAlias('@app', __DIR__);
-        $_ENV['LANG'] = 'fr';
     }
 
     protected function tearDown(): void
     {
         Piko::reset();
-        unset($_ENV['LANG']);
     }
 
     public function testWithConfig()
     {
-        $config = [
-            'translations' => [
-                'test' => '@app/messages'
-            ]
-        ];
-
-        $i18n = new I18n($config);
-        Piko::set('i18n', $i18n);
+        $translations = ['test' => '@app/messages'];
+        $i18n = new I18n($translations, 'fr');
 
         $this->assertEquals('Test de traduction', $i18n->translate('test', 'Translation test'));
         $this->assertEquals('Bonjour Toto', $i18n->translate('test', 'Hello {name}', ['name' => 'Toto']));
@@ -36,8 +29,7 @@ class I18nTest extends TestCase
 
     public function testAddTranslation()
     {
-        $i18n = new I18n();
-        Piko::set('i18n', $i18n);
+        $i18n = new I18n([], 'fr');
         $i18n->addTranslation('test', '@app/messages');
 
         $this->assertEquals('Test de traduction', $i18n->translate('test', 'Translation test'));
@@ -48,15 +40,8 @@ class I18nTest extends TestCase
 
     public function testUnregisteredTranslation()
     {
-        $i18n = new I18n([]);
+        $i18n = new I18n();
         $this->assertEquals('Translation test', $i18n->translate('test', 'Translation test'));
         $this->assertEquals('Hello Toto', $i18n->translate('test', 'Hello {name}', ['name' => 'Toto']));
-    }
-
-    public function testNotRegisteredI18nComponent()
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('i18n must be instance of piko\I18n');
-        __('test', 'Translation test');
     }
 }

@@ -8,8 +8,9 @@
  * @link https://github.com/piko-framework/i18n
  */
 
-use piko\Piko;
-use piko\I18n;
+namespace Piko\I18n;
+
+use Piko\I18n;
 
 /**
  * Proxy to I18n::translate method
@@ -19,18 +20,13 @@ use piko\I18n;
  * @param array<string> $params Parameters substitution,
  *                                               eg. $this->translate('site', 'Hello {name}', ['name' => 'John']).
  *
- * @throws RuntimeException
  * @return string The translated text or the text itself if no translation was found (the text can be null).
  *
  * @see I18n::translate()
  */
 function __(string $domain, ?string $text, array $params = []): ?string
 {
-    $i18n = Piko::get('i18n');
-
-    if (!$i18n instanceof I18n) {
-        throw new RuntimeException('i18n must be instance of piko\I18n');
-    }
+    $i18n = I18n::getInstance(); // @phpstan-ignore-line
 
     return $i18n->translate($domain, $text, $params);
 }
