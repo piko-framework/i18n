@@ -26,7 +26,7 @@ use Piko\I18n;
  */
 function __(string $domain, ?string $text, array $params = []): ?string
 {
-    $i18n = I18n::getInstance(); // @phpstan-ignore-line
+    $i18n = I18n::getInstance();
 
     return $i18n->translate($domain, $text, $params);
 }

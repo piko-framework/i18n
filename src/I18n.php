@@ -79,7 +79,7 @@ class I18n
      *
      * @return I18n
      */
-    public function getInstance(): I18n
+    public static function getInstance(): I18n
     {
         if (static::$instance === null) {
             static::$instance = new I18n();
