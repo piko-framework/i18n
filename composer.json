@@ -1,6 +1,6 @@
 {
 	"name" : "piko/i18n",
-	"description" : "A minimal internationalization component which can be used in a piko application or standalone.",
+	"description" : "A minimal internationalization component that can be used in a piko application or standalone.",
 	"keywords" : [
 		"internationalization",
 		"i18n",
@@ -21,7 +21,7 @@
 	},
 	"autoload" : {
 		"psr-4" : {
-			"Piko\\" : "src"
+			"Piko\\" : "src/"
 		},
 		"files" : [
 			"src/I18n/functions.php"
