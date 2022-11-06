@@ -41,7 +41,7 @@ class I18n
     /**
      * I18n Instance
      *
-     * @var I18n
+     * @var I18n|null
      */
     protected static $instance;
 
@@ -86,6 +86,14 @@ class I18n
         }
 
         return static::$instance;
+    }
+
+    /**
+     * Reset singleton instance
+     */
+    public static function reset(): void
+    {
+        static::$instance = null;
     }
 
     /**

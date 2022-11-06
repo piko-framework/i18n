@@ -44,4 +44,11 @@ class I18nTest extends TestCase
         $this->assertEquals('Translation test', $i18n->translate('test', 'Translation test'));
         $this->assertEquals('Hello Toto', $i18n->translate('test', 'Hello {name}', ['name' => 'Toto']));
     }
+
+    public function testUnregisteredTranslationWithProxyFunction()
+    {
+        I18n::reset();
+        $this->assertEquals('Translation test', __('test', 'Translation test'));
+        $this->assertEquals('Hello Toto', __('test', 'Hello {name}', ['name' => 'Toto']));
+    }
 }
