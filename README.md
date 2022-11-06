@@ -39,15 +39,10 @@ App root
 
 ## Usage in a piko application
 
-```bash
-composer require piko/framework
-```
-
 index.php :
 
 ```php
-
-use piko\Application;
+use Piko\Application;
 use function Piko\I18n\__;
 
 require('vendor/autoload.php');
@@ -79,12 +74,12 @@ echo __('app', 'Hello {name}', ['name' => 'John']) . '<br>' ;  // Bonjour John
 ## Usage in a standalone script
 
 ```php
-use piko\I18n;
+use Piko\I18n;
 use function Piko\I18n\__;
 
 require('vendor/autoload.php');
 
-$i18n = new I18n(['app' => __DIR__ . '/messages', 'fr']);
+$i18n = new I18n(['app' => __DIR__ . '/messages'], 'fr');
 
 echo $i18n->translate('app', 'Translation test') . '<br>';
 echo $i18n->translate('app', 'Hello {name}', ['name' => 'John']) . '<br>' ;
