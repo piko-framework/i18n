@@ -32,6 +32,13 @@ class I18n
     public $language = '';
 
     /**
+     * A key-value paired array of domain / path
+     *
+     * @var array<string, string>
+     */
+    public $translations = [];
+
+    /**
      * Messages container by domain
      *
      * @var array<array<string, string>>
@@ -47,30 +54,23 @@ class I18n
 
     /**
      * Constructor
-     *
-     * $config argument should contains the key translations giving
-     * a key / values pairs of domain / path.
+     * The $translations argument should contains a key-value paired array of domain / path.
      *
      * Example :
      *
      * ```php
      * [
-     *   'translations' => [
-     *     'app' => '@app/messages'
-     *   ]
-       ]
-       ```
+     *    'app' => '@app/messages'
+     * ]
+     * ```
      *
      * @param array<string, string> $translations
+     * @param string $language The language code
      */
     public function __construct(array $translations = [], string $language = 'en')
     {
         $this->language = $language;
-
-        foreach ($translations as $domain => $path) {
-            $this->addTranslation($domain, $path);
-        }
-
+        $this->translations = $translations;
         static::$instance = $this;
     }
 
@@ -97,6 +97,16 @@ class I18n
     }
 
     /**
+     * Load translation messages
+     */
+    public function loadTranslations(): void
+    {
+        foreach ($this->translations as $domain => $path) {
+            $this->addTranslation($domain, $path);
+        }
+    }
+
+    /**
      * Register a translation
      *
      * @param string $domain The translation domain, for instance 'app'.
@@ -120,6 +130,10 @@ class I18n
      */
     public function translate(string $domain, ?string $text, array $params = []): ?string
     {
+        if (empty($this->messages)) {
+            $this->loadTranslations();
+        }
+
         $event = new BeforeTranslateEvent($domain, $text, $params);
 
         $this->trigger($event);
