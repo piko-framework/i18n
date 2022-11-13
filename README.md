@@ -51,10 +51,10 @@ $config = [
     'basePath' => __DIR__,
     'components' => [
         'Piko\I18n' => [
-            'construct' => [
-                ['app' => '@app/messages'],
-                'fr'
-            ]
+            'translations' => [
+                'app' => '@app/messages',
+            ],
+            'language' => 'fr'
         ],
     ],
 ];
