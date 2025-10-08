@@ -15,8 +15,8 @@ composer require piko/i18n
 
 ## Usage
 
-In order to use the I18n component, translations have to be stored in PHP 
-files that return a key-value pair array of translations. Keys are strings to translate 
+In order to use the I18n component, translations have to be stored in PHP
+files that return a key-value pair array of translations. Keys are strings to translate
 and values are corresponding translated strings.
 
 Example of translation file *fr.php* :
@@ -67,6 +67,7 @@ echo $i18n->translate('app', 'Translation test') . '<br>'; // Test de traduction
 echo $i18n->translate('app', 'Hello {name}', ['name' => 'John']) . '<br>' ; // Bonjour John
 
 // Using the proxy function __() :
+I18n::setInstance($i18n); // Required to use the function __()
 echo __('app', 'Translation test') . '<br>'; // Test de traduction
 echo __('app', 'Hello {name}', ['name' => 'John']) . '<br>' ;  // Bonjour John
 ```
@@ -85,7 +86,7 @@ echo $i18n->translate('app', 'Translation test') . '<br>';
 echo $i18n->translate('app', 'Hello {name}', ['name' => 'John']) . '<br>' ;
 
 // Using the proxy function __() :
-
+I18n::setInstance($i18n); // Required to use the function __()
 echo __('app', 'Translation test') . '<br>';
 echo __('app', 'Hello {name}', ['name' => 'John']) . '<br>' ;
 

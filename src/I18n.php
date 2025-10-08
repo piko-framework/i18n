@@ -50,7 +50,7 @@ class I18n
      *
      * @var I18n|null
      */
-    protected static $instance;
+    protected static $instance = null;
 
     /**
      * Constructor
@@ -71,21 +71,26 @@ class I18n
     {
         $this->language = $language;
         $this->translations = $translations;
-        static::$instance = $this;
     }
 
     /**
      * Return I18n singleton instance
      *
-     * @return I18n
+     * @return null|I18n
      */
-    public static function getInstance(): I18n
+    public static function getInstance(): ?I18n
     {
-        if (static::$instance === null) {
-            static::$instance = new I18n();
-        }
-
         return static::$instance;
+    }
+
+    /**
+     * Set the i18n instance for the \I18n\__ function
+     *
+     * @param I18n|null $instance The i18n instance
+     */
+    public static function setInstance(?I18n $instance): void
+    {
+        static::$instance = $instance;
     }
 
     /**
@@ -115,7 +120,11 @@ class I18n
      */
     public function addTranslation(string $domain, string $path): void
     {
-        $this->messages[$domain] = require \Piko::getAlias($path) . '/' . $this->language . '.php';
+        $file = \Piko::getAlias("{$path}/{$this->language}.php");
+
+        if (is_string($file) && file_exists($file)) {
+            $this->messages[$domain] = require $file;
+        }
     }
 
     /**

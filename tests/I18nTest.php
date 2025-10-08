@@ -20,6 +20,7 @@ class I18nTest extends TestCase
     {
         $translations = ['test' => '@app/messages'];
         $i18n = new I18n($translations, 'fr');
+        I18n::setInstance($i18n);
 
         $this->assertEquals('Test de traduction', $i18n->translate('test', 'Translation test'));
         $this->assertEquals('Bonjour Toto', $i18n->translate('test', 'Hello {name}', ['name' => 'Toto']));
@@ -31,6 +32,7 @@ class I18nTest extends TestCase
     {
         $i18n = new I18n([], 'fr');
         $i18n->addTranslation('test', '@app/messages');
+        I18n::setInstance($i18n);
 
         $this->assertEquals('Test de traduction', $i18n->translate('test', 'Translation test'));
         $this->assertEquals('Bonjour Toto', $i18n->translate('test', 'Hello {name}', ['name' => 'Toto']));
@@ -47,8 +49,8 @@ class I18nTest extends TestCase
 
     public function testUnregisteredTranslationWithProxyFunction()
     {
-        I18n::reset();
-        $this->assertEquals('Translation test', __('test', 'Translation test'));
-        $this->assertEquals('Hello Toto', __('test', 'Hello {name}', ['name' => 'Toto']));
+        I18n::setInstance(null);
+        $this->expectException(\RuntimeException::class);
+        __('test', 'Translation test');
     }
 }
