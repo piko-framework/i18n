@@ -104,10 +104,18 @@ class I18n
     /**
      * Load translation messages
      */
-    public function loadTranslations(): void
+    protected function loadTranslations(string $domain): void
     {
-        foreach ($this->translations as $domain => $path) {
-            $this->addTranslation($domain, $path);
+        foreach ($this->translations as $d => $path) {
+            if ($d == $domain) {
+                $file = \Piko::getAlias("{$path}/{$this->language}.php");
+
+                if (is_string($file) && file_exists($file)) {
+                    $this->messages[$domain] = require $file;
+                }
+
+                break;
+            }
         }
     }
 
@@ -120,11 +128,7 @@ class I18n
      */
     public function addTranslation(string $domain, string $path): void
     {
-        $file = \Piko::getAlias("{$path}/{$this->language}.php");
-
-        if (is_string($file) && file_exists($file)) {
-            $this->messages[$domain] = require $file;
-        }
+        $this->translations[$domain] = $path;
     }
 
     /**
@@ -139,8 +143,8 @@ class I18n
      */
     public function translate(string $domain, ?string $text, array $params = []): ?string
     {
-        if (empty($this->messages)) {
-            $this->loadTranslations();
+        if (empty($this->messages[$domain])) {
+            $this->loadTranslations($domain);
         }
 
         $event = new BeforeTranslateEvent($domain, $text, $params);
